@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { prisma } from "@/lib/db";
+import { isDatabaseConfigured, prisma } from "@/lib/db";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
@@ -8,11 +8,29 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
+export const dynamic = "force-dynamic";
+
 export default async function TopicListPage({
   params
 }: {
   params: { languageId: string };
 }) {
+  if (!isDatabaseConfigured()) {
+    return (
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Paper sx={{ p: 3 }}>
+          <Typography variant="h6" fontWeight={800}>
+            Topics unavailable
+          </Typography>
+          <Typography color="text.secondary" sx={{ mt: 1 }}>
+            Add DATABASE_URL in Netlify (Site settings → Environment variables) and redeploy to load
+            languages and topics.
+          </Typography>
+        </Paper>
+      </Container>
+    );
+  }
+
   const language = await prisma.language.findUnique({
     where: { id: params.languageId },
     include: { topics: { orderBy: { order: "asc" } } }

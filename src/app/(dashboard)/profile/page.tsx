@@ -6,11 +6,37 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { isDatabaseConfigured, prisma } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) redirect("/login");
+
+  if (!isDatabaseConfigured()) {
+    return (
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Paper sx={{ p: 3 }}>
+          <Stack spacing={2}>
+            <Typography variant="h5" fontWeight={900} color="primary.main">
+              Profile
+            </Typography>
+            <Typography color="text.secondary">
+              {session.user.email} • Streak: —
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Database is not configured yet. Add{" "}
+              <Typography component="span" fontWeight={700}>
+                DATABASE_URL
+              </Typography>{" "}
+              in Netlify → Site settings → Environment variables, then redeploy.
+            </Typography>
+          </Stack>
+        </Paper>
+      </Container>
+    );
+  }
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },

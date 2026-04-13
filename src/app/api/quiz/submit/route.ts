@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { z } from "zod";
 
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { isDatabaseConfigured, prisma } from "@/lib/db";
 
 const answerSchema = z.object({
   questionId: z.string(),
@@ -37,6 +37,12 @@ export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if (!isDatabaseConfigured()) {
+    return NextResponse.json(
+      { error: "Database not configured", message: "Add DATABASE_URL in Netlify environment variables." },
+      { status: 503 }
+    );
   }
 
   const user = await prisma.user.findUnique({

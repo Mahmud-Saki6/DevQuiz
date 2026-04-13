@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 
-import { prisma } from "@/lib/db";
+import { isDatabaseConfigured, prisma } from "@/lib/db";
 
 const registerSchema = z.object({
   name: z
@@ -16,6 +16,12 @@ const registerSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    if (!isDatabaseConfigured()) {
+      return NextResponse.json(
+        { error: "Database not configured", message: "Add DATABASE_URL in Netlify environment variables." },
+        { status: 503 }
+      );
+    }
     const body = await req.json().catch(() => null);
     const parsed = registerSchema.safeParse(body);
     if (!parsed.success) {

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db";
+import { isDatabaseConfigured, prisma } from "@/lib/db";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
@@ -10,6 +10,8 @@ import TopicPerformanceChart from "@/components/results/TopicPerformanceChart";
 import WeakTopicsPanel from "@/components/results/WeakTopicsPanel";
 import MistakeReview from "@/components/results/MistakeReview";
 import ResultsActions from "@/components/results/ResultsActions";
+
+export const dynamic = "force-dynamic";
 
 type Answer = {
   topic: string;
@@ -26,6 +28,22 @@ export default async function ResultsPage({
 }: {
   params: { sessionId: string };
 }) {
+  if (!isDatabaseConfigured()) {
+    return (
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Paper sx={{ p: 3 }}>
+          <Typography fontWeight={900} sx={{ mb: 1 }}>
+            Results unavailable
+          </Typography>
+          <Typography color="text.secondary">
+            Set DATABASE_URL in your hosting environment (Netlify → Environment variables) so the
+            app can load quiz sessions from the database.
+          </Typography>
+        </Paper>
+      </Container>
+    );
+  }
+
   const session = await prisma.quizSession.findUnique({
     where: { id: params.sessionId },
     include: { topic: { include: { language: true } } }
