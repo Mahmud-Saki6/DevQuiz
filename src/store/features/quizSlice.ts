@@ -20,7 +20,7 @@ export interface QuizState {
   error: string | null;
 }
 
-const initialState: QuizState = {
+export const initialQuizState: QuizState = {
   language: null,
   languageId: null,
   topic: null,
@@ -97,7 +97,7 @@ export const submitQuiz = createAsyncThunk<
 
 const quizSlice = createSlice({
   name: "quiz",
-  initialState,
+  initialState: initialQuizState,
   reducers: {
     setCategory(state, action: PayloadAction<string>) {
       state.category = action.payload;
