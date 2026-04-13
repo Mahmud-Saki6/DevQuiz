@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import type { RootState } from "@/store";
 import { setDifficulty, setQuestionCount } from "@/store/features/quizSlice";
+import { initialQuizState } from "@/store/features/quizSlice";
 
 type LanguageWithTopics = Language & { topics: Topic[] };
 
@@ -29,7 +30,7 @@ export default function QuizConfigPanel({
   onStart: () => void;
 }) {
   const dispatch = useDispatch();
-  const quiz = useSelector((s: RootState) => s.quiz);
+  const quiz = useSelector((s: RootState) => s.quiz ?? initialQuizState);
 
   const topicChips = useMemo(() => {
     if (!language) return [];

@@ -15,6 +15,7 @@ import LanguageGrid from "@/components/home/LanguageGrid";
 import QuizConfigPanel from "@/components/home/QuizConfigPanel";
 import type { RootState } from "@/store";
 import { setCategory, setLanguage, setTopic } from "@/store/features/quizSlice";
+import { initialQuizState } from "@/store/features/quizSlice";
 
 type LanguageWithTopics = Language & { topics: Topic[] };
 
@@ -22,7 +23,7 @@ export default function HomeClient({ languages }: { languages: LanguageWithTopic
   const router = useRouter();
   const params = useSearchParams();
   const dispatch = useDispatch();
-  const quiz = useSelector((s: RootState) => s.quiz);
+  const quiz = useSelector((s: RootState) => s.quiz ?? initialQuizState);
 
   // deep-link support: ?languageId=...&topicId=...&difficulty=...&count=...&topics=comma...
   const preselectedTopicId = params.get("topicId");

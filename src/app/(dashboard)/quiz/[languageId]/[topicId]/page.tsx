@@ -19,6 +19,7 @@ import {
   resetQuiz,
   submitQuiz
 } from "@/store/features/quizSlice";
+import { initialQuizState } from "@/store/features/quizSlice";
 import type { Question } from "@/types";
 import QuizCard from "@/components/quiz/QuizCard";
 import AnswerButton from "@/components/quiz/AnswerButton";
@@ -34,7 +35,7 @@ export default function ActiveQuizPage() {
   const router = useRouter();
   const { languageId, topicId } = useParams<{ languageId: string; topicId: string }>();
   const dispatch = useDispatch();
-  const quiz = useSelector((s: RootState) => s.quiz);
+  const quiz = useSelector((s: RootState) => s.quiz ?? initialQuizState);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);

@@ -11,12 +11,12 @@ import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { useDispatch, useSelector } from "react-redux";
 
 import type { RootState } from "@/store";
-import { setUser } from "@/store/features/userSlice";
+import { initialUserState, setUser } from "@/store/features/userSlice";
 
 export default function Navbar() {
   const { data } = useSession();
   const dispatch = useDispatch();
-  const streak = useSelector((s: RootState) => s.user.streak);
+  const streak = useSelector((s: RootState) => (s.user ?? initialUserState).streak);
 
   useEffect(() => {
     dispatch(

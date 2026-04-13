@@ -47,7 +47,12 @@ const persistConfig = {
   transforms: [quizTransform]
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+// redux-persist's typing makes slice states optional during rehydration.
+// Our runtime always provides defaults, so we cast to keep TS + Next build happy.
+const persistedReducer = persistReducer(
+  persistConfig as any,
+  rootReducer as any
+) as unknown as typeof rootReducer;
 
 export const store = configureStore({
   reducer: persistedReducer,
@@ -59,6 +64,6 @@ export const store = configureStore({
 
 export const persistor = persistStore(store);
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 

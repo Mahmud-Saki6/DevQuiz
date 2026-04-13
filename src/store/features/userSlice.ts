@@ -6,7 +6,7 @@ export interface UserState {
   streak: number;
 }
 
-const initialState: UserState = {
+export const initialUserState: UserState = {
   name: null,
   email: null,
   streak: 0
@@ -14,7 +14,7 @@ const initialState: UserState = {
 
 const userSlice = createSlice({
   name: "user",
-  initialState,
+  initialState: initialUserState,
   reducers: {
     setUser(
       state,
